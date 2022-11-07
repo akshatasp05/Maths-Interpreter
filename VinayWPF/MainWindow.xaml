@@ -1,0 +1,104 @@
+﻿<Window x:Class="VinayWPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VinayWPF"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="95*"/>
+        </Grid.RowDefinitions>
+
+        <DockPanel LastChildFill="True" >
+            <Menu DockPanel.Dock="Top" Width="Auto" Background="#FFC5D5EA" BorderBrush="#FF8A4949" FontFamily="SimSun-ExtB" OpacityMask="#FFD26969" >
+                <MenuItem Header="_File" Click="MenuItem_Click" StaysOpenOnClick="True">
+                    <MenuItem Header="_New " Command="New"/>
+                    <MenuItem Header="_Open" Command="Open"/>
+                    <MenuItem Header="_Save" Command="Save"/>
+                    <MenuItem Header="_Clear" Click="menu_clear"/>
+                    <Separator/>
+                    <MenuItem Header="_Exit" Click="menu_exit"/>
+                </MenuItem>
+            </Menu>
+        </DockPanel>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="20*"/>
+                <ColumnDefinition Width="80*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="80*"/>
+                    <RowDefinition Height="20*"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="1" Background="#FFF0EEEE">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="12*"/>
+                        <ColumnDefinition Width="88*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50*"/>
+                            <RowDefinition Height="50*"/>
+                        </Grid.RowDefinitions>
+                    </Grid>
+                    <Grid Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="15*"/>
+                            <ColumnDefinition Width="85*"/>
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                    <TextBox x:Name="txtName" Grid.Column="1" TextWrapping="Wrap" Background="#FFB3D1F4" TextChanged="txtName_TextChanged"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50*"/>
+                            <RowDefinition Height="50*"/>
+                        </Grid.RowDefinitions>
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="50*"/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                        </Grid>
+                    </Grid>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50*"/>
+                            <RowDefinition Height="50*"/>
+                        </Grid.RowDefinitions>
+                        <Button Content="Evaluate" Grid.Row="1" Background="#FFB3C5D7" IsDefault="True"  Click="btn_evaluate" FontFamily="SimSun-ExtB"/>
+                        <Label Content="Expression &gt;" VerticalContentAlignment="Center" FontFamily="SimSun-ExtB" Background="#FFB3C5D7" HorizontalContentAlignment="Center" FontSize="11"/>
+                    </Grid>
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="98*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+                    <ListBox x:Name="txtExp" d:ItemsSource="{d:SampleData ItemCount=5}" BorderBrush="#FFB29393" Background="#FFBFCDE7"/>
+                    <ScrollBar Grid.Column="1"/>
+                </Grid>
+            </Grid>
+            <Grid Background="#FFA7CCF1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="8*"/>
+                    <RowDefinition Height="92*"/>
+                </Grid.RowDefinitions>
+                <Label Content="Variables" BorderBrush="#FF9F7171" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="#FFD8E1E9" Foreground="#FF191717" FontFamily="SimSun-ExtB"/>
+
+            </Grid>
+        </Grid>
+
+
+    </Grid>
+</Window>
