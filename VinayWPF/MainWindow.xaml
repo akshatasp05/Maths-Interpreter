@@ -95,6 +95,12 @@
                     <RowDefinition Height="92*"/>
                 </Grid.RowDefinitions>
                 <Label Content="Variables" BorderBrush="#FF9F7171" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="#FFD8E1E9" Foreground="#FF191717" FontFamily="SimSun-ExtB"/>
+                <DataGrid x:Name="VariableTable" Grid.Row="1" IsReadOnly="True" >
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Name" CanUserResize="True" Width="50*" FontFamily="SimSun-ExtB" Binding="{Binding name}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Value" Width="50*" CanUserResize="True" FontFamily="SimSun-ExtB" Binding="{Binding value}"></DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
 
             </Grid>
         </Grid>

@@ -22,7 +22,9 @@ namespace VinayWPF
     /// </summary>
     public partial class MainWindow : Window
     {
-        string input,output;
+        string input, output;
+        //List<variable> Variables = new List<variable>();
+       
         public MainWindow()
         {
             InitializeComponent();
@@ -72,15 +74,35 @@ namespace VinayWPF
 
         private void btn_evaluate(object sender, RoutedEventArgs e)
         {
+
+
+             
+
             string mathExp1 = txtName.Text.ToString();
             MainProg startingPoint = new MainProg();
             this.output = startingPoint.finalResult(this.input);
 
             if (!string.IsNullOrWhiteSpace(txtName.Text) && !txtExp.Items.Contains(txtName.Text))
             {
-                txtExp.Items.Add(">"+this.input + "\n=" + this.output.ToString());
+                txtExp.Items.Add(">" + this.input + "\n=" + this.output.ToString());
                 txtName.Clear();
             }
+
+            if (Interpreter.variablesStored.Count != 0)
+            {
+                List<variable> Variables = new List<variable>();
+                foreach (var items in Interpreter.variablesStored)
+                {
+                    ///Variables.Clear();
+                    Variables.Add(new variable(){ name = items.Key, value = items.Value });
+                   
+                    //VariableTable.Rows.Add(items.Key, items.Value);
+                }
+                VariableTable.AutoGenerateColumns = false;
+                VariableTable.ItemsSource = Variables;
+
+            }
+            //MyDictionary = Interpreter.variablesStored;
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
@@ -90,9 +112,19 @@ namespace VinayWPF
 
         private void txtName_TextChanged(object sender, TextChangedEventArgs e)
         {
-            this.input= txtName.Text.ToString();
+            this.input = txtName.Text.ToString();
             this.output = this.input;
 
         }
+
     }
+
+    
+    public class variable
+    {
+        public string name { get; set; }
+        public double value { get; set; }
+    }
+    
 }
+    

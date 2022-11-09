@@ -17,12 +17,12 @@ namespace VinayWPF
             Lexer lexer = new Lexer(input);
             Interpreter interpreter = new Interpreter();
             tokens = lexer.GenerateTokens();
-            /* if (tokens.Count == 0)
+             if (tokens.Count == 0)
              {
-                 Console.WriteLine("Undefined Token");
-                 continue;
+                return "Invalid Expression";
+                 //continue;
              }
-            */
+            
             if (tokens[0].Contains("Invalid Varaible:"))
             {
                 return tokens[0];

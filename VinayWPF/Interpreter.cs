@@ -21,12 +21,13 @@ namespace VinayWPF
         List<double> plotNumbersY = new List<double>();
         List<double> plotNumbersOutput = new List<double>();
         List<double> parameters = new List<double>();
+        List<string> variables = new List<string>();
         private Dictionary<Char, List<double>> plotValues = new Dictionary<Char, List<double>>();
         public static Dictionary<string, double> variablesStored = new Dictionary<string, double>();
         Tokens T1 = new Tokens();
         string[] temp_string;
         int div_count = 1, plotFunction = 0, requestForPlot = 0;
-        string variable;
+        string variable,updateVariable="";
         double output, div_exp, temp_num1, upperbound, lowerbound, scale, stepCount, valueOfx;
 
         public double Calculate(Stack<double> Operands, Stack<Char> Operations)
@@ -192,7 +193,7 @@ namespace VinayWPF
                             }
 
                         }
-                        Interpreter.variablesStored[variable] = num1;
+                        Interpreter.variablesStored[variables[0]] = num1;
                         return num1;
 
                     case '>':
@@ -281,6 +282,7 @@ namespace VinayWPF
                 else if ((Char.IsLetter(c) || c.Equals('_')) && this.plotFunction == 0)
                 {
                     this.variable = "";
+                    this.updateVariable = "";
                     while (Char.IsLetterOrDigit(c) || c.Equals('_'))
                     {
                         this.variable = this.variable + c;
@@ -295,10 +297,13 @@ namespace VinayWPF
                             break;
                         }
                     }
+                    this.variables.Add(this.variable);
                     i = i - 1;
                     if (!Interpreter.variablesStored.ContainsKey(this.variable))
                     {
+                        //this.updateVariable = this.variable;
                         Interpreter.variablesStored[this.variable] = 0;
+                        
                     }
                     else
                     {
@@ -455,6 +460,7 @@ namespace VinayWPF
                 else if ((Char.IsLetter(c) || c.Equals('_')) && plotFunction == 0)
                 {
                     this.variable = "";
+                    this.updateVariable = "";
                     while (Char.IsLetterOrDigit(c) || c.Equals('_'))
                     {
                         this.variable = this.variable + c;
@@ -470,8 +476,10 @@ namespace VinayWPF
                         }
                     }
                     i = i - 1;
+                    this.variables.Add(this.variable);
                     if (!Interpreter.variablesStored.ContainsKey(this.variable))
                     {
+                        //this.updateVariable = this.variable;
                         Interpreter.variablesStored[this.variable] = 0;
                     }
                     else
