@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Channels;
@@ -37,6 +38,8 @@ namespace VinayWPF
         private void NewExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             MessageBox.Show("You want to create new file.");
+
+           
         }
 
         private void CanNew(object sender, CanExecuteRoutedEventArgs e)
@@ -44,9 +47,50 @@ namespace VinayWPF
             e.CanExecute = true;
         }
 
+         
+
         private void OpenExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            MessageBox.Show("You want to open existing file.");
+            //MessageBox.Show("You want to open existing file.");
+            string filename = "", contents="";
+            var dialog = new Microsoft.Win32.OpenFileDialog();
+            dialog.FileName = "Document"; // Default file name
+            dialog.DefaultExt = ".txt"; // Default file extension
+            dialog.Filter = "Text documents (.txt)|*.txt"; // Filter files by extension
+
+            // Show open file dialog box
+            if (!txtExp.Items.IsEmpty)
+            {
+                MessageBoxResult dialogResult = MessageBox.Show("Do you want to Save?", "Save?", MessageBoxButton.YesNo);
+                if (dialogResult == MessageBoxResult.Yes)
+                {
+                    this.save();
+                }
+                else if (dialogResult == MessageBoxResult.No)
+                {
+                    //do something else
+                    txtExp.Items.Clear();
+
+
+                }
+            }
+            else
+            {
+                txtExp.Items.Clear();
+            }
+            
+            bool? result = dialog.ShowDialog();
+
+            // Process open file dialog box results
+            if (result == true)
+            {
+                // Open document
+                filename = dialog.FileName;
+                contents = File.ReadAllText(filename);
+                txtExp.Items.Add(contents);
+
+            }
+            MainWin.Title = System.IO.Path.GetFileNameWithoutExtension(filename); ;
         }
 
         private void CanOpen(object sender, CanExecuteRoutedEventArgs e)
@@ -56,7 +100,35 @@ namespace VinayWPF
 
         private void SaveExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            MessageBox.Show("You want to save a file.");
+            //MessageBox.Show("You want to save a file.");
+            /*
+            var dialog = new Microsoft.Win32.SaveFileDialog();
+            dialog.FileName = "Document"; // Default file name
+            dialog.DefaultExt = ".txt"; // Default file extension
+            dialog.Filter = "Text documents (.txt)|*.txt"; // Filter files by extension
+
+            // Show save file dialog box
+            bool? result = dialog.ShowDialog();
+
+            // Process save file dialog box results
+            if (result == true)
+            {
+                // Save document
+                string fileText = "";
+                string filename = dialog.FileName;
+                
+                
+                for(int i =0; i< txtExp.Items.Count; i++)
+                {
+                    fileText = fileText + txtExp.Items[i].ToString() + "\n";
+                }
+
+                File.WriteAllText(filename, fileText);
+                MainWin.Title = System.IO.Path.GetFileNameWithoutExtension(filename);
+
+            }
+            */
+            this.save();
         }
         private void CanSave(object sender, CanExecuteRoutedEventArgs e)
         {
@@ -64,12 +136,60 @@ namespace VinayWPF
         }
         private void menu_clear(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Do you want to Clear?");
+            //MessageBox.Show("Do you want to Clear?");
+            txtExp.Items.Clear();
         }
+        private void save()
+        {
+            var dialog = new Microsoft.Win32.SaveFileDialog();
+            dialog.FileName = "Document"; // Default file name
+            dialog.DefaultExt = ".txt"; // Default file extension
+            dialog.Filter = "Text documents (.txt)|*.txt"; // Filter files by extension
 
+            // Show save file dialog box
+            bool? result = dialog.ShowDialog();
+
+            // Process save file dialog box results
+            if (result == true)
+            {
+                // Save document
+                string fileText = "";
+                string filename = dialog.FileName;
+
+
+                for (int i = 0; i < txtExp.Items.Count; i++)
+                {
+                    fileText = fileText + txtExp.Items[i].ToString() + "\n";
+                }
+
+                File.WriteAllText(filename, fileText);
+                MainWin.Title = System.IO.Path.GetFileNameWithoutExtension(filename);
+
+            }
+        }
         private void menu_exit(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Do you want to Exit?");
+            if (!txtExp.Items.IsEmpty)
+            {
+                //MessageBox.Show("Do you want to Exit?");
+                //SaveExecuted(sender, e);
+                MessageBoxResult dialogResult = MessageBox.Show("Do you want to Save?", "Save?", MessageBoxButton.YesNo);
+                if (dialogResult == MessageBoxResult.Yes)
+                {
+                    this.save(); 
+                }
+                else if (dialogResult == MessageBoxResult.No)
+                {
+                    //do something else
+                    MainWin.Close();
+                }
+            }
+            else
+            {
+                MainWin.Close();
+            }
+
+           
         }
 
         private void btn_evaluate(object sender, RoutedEventArgs e)
@@ -100,14 +220,14 @@ namespace VinayWPF
                 }
                 VariableTable.AutoGenerateColumns = false;
                 VariableTable.ItemsSource = Variables;
-
+                //VariableTable.Style.;
             }
             //MyDictionary = Interpreter.variablesStored;
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-
+            
         }
 
         private void txtName_TextChanged(object sender, TextChangedEventArgs e)

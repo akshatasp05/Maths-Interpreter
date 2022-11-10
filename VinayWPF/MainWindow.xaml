@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VinayWPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800" Name="MainWin">
     <Grid >
         <Grid.RowDefinitions>
             <RowDefinition Height="5*"/>
@@ -14,13 +14,14 @@
 
         <DockPanel LastChildFill="True" >
             <Menu DockPanel.Dock="Top" Width="Auto" Background="#FFC5D5EA" BorderBrush="#FF8A4949" FontFamily="SimSun-ExtB" OpacityMask="#FFD26969" >
-                <MenuItem Header="_File" Click="MenuItem_Click" StaysOpenOnClick="True">
-                    <MenuItem Header="_New " Command="New"/>
-                    <MenuItem Header="_Open" Command="Open"/>
-                    <MenuItem Header="_Save" Command="Save"/>
-                    <MenuItem Header="_Clear" Click="menu_clear"/>
+                <MenuItem Header="_File" Click="MenuItem_Click" StaysOpenOnClick="True" Height="20">
+                    <MenuItem Header="_New " Name="New" Command="New"/>
+                    <MenuItem Header="_Open" Name="Open" Command="Open"/>
+                    <MenuItem Header="_Save" Name="Save" Command="Save"/>
+                    <MenuItem Header="_Clear" Name="Clear" Click="menu_clear"/>
                     <Separator/>
                     <MenuItem Header="_Exit" Click="menu_exit"/>
+                    <!-- <TextBox AcceptsReturn="True" Name="txtEditor" />  -->
                 </MenuItem>
             </Menu>
         </DockPanel>
@@ -95,10 +96,24 @@
                     <RowDefinition Height="92*"/>
                 </Grid.RowDefinitions>
                 <Label Content="Variables" BorderBrush="#FF9F7171" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="#FFD8E1E9" Foreground="#FF191717" FontFamily="SimSun-ExtB"/>
-                <DataGrid x:Name="VariableTable" Grid.Row="1" IsReadOnly="True" >
+                <DataGrid x:Name="VariableTable" Grid.Row="1" IsReadOnly="True" Background="#FF160D7B" BorderBrush="#FF8EABC8" HorizontalAlignment="Left" >
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Name" CanUserResize="True" Width="50*" FontFamily="SimSun-ExtB" Binding="{Binding name}"></DataGridTextColumn>
-                        <DataGridTextColumn Header="Value" Width="50*" CanUserResize="True" FontFamily="SimSun-ExtB" Binding="{Binding value}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Name" CanUserResize="True" Width="50*" FontFamily="SimSun-ExtB" Binding="{Binding name}" Visibility="Visible" FontWeight="Normal" FontStyle="Oblique" IsReadOnly="True">
+                            <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                    <Setter Property="Background" Value="#FFBFCDE7"></Setter>
+                                    <Setter Property="FontSize" Value="15px"></Setter>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Value" Width="50*" CanUserResize="True" FontFamily="SimSun-ExtB" Binding="{Binding value}" IsReadOnly="True" FontStyle="Italic" Foreground="Blue" >
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                    <Setter Property="Background" Value="#FFBFCDE7"></Setter>
+                                    <Setter Property="FontSize" Value="15px"></Setter>
+                                </Style>
+                        </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
                     </DataGrid.Columns>
                 </DataGrid>
 
