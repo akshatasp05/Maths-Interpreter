@@ -228,6 +228,29 @@ namespace VinayWPF
                         return Operands.Pop();
                     case '$':
                         return Operands.Pop();
+                    case '@':
+                        long num = Convert.ToInt64(Operands.Pop());
+                        long start = 1, end = num / 2;
+                        long mid=0,ans=0,sqr = 0;
+                        while(start<=end)
+                        {
+                            mid = (start + end) / 2;
+                            sqr = mid * mid;
+                            if (sqr == num)
+                            {
+                               return mid;
+                            }
+                            else if(sqr<=num)
+                            {
+                                start = mid + 1;
+                                ans = mid;
+                            }
+                            else
+                            {
+                                end = mid - 1;
+                            }
+                        }
+                        return ans;
 
 
                 }
@@ -407,12 +430,13 @@ namespace VinayWPF
                     plotNumbersX.Add(j);
                     plotNumbersY.Add(output);
                 }
-                foreach (double item in plotNumbersY)
-                {
-                    Console.WriteLine(item);
-                }
+                //foreach (double item in plotNumbersY)
+               // {
+                //    Console.WriteLine(item);
+                //}
                 return "1";
             }
+            
 
             if (!expr.StartsWith('(') && plotFunction == 0)
             {

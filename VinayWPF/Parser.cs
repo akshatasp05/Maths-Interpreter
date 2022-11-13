@@ -276,6 +276,14 @@ namespace VinayWPF
                     return N1.plotNode(this.currentchar, this.Factor());
 
                 }
+                else if (this.currentchar.Contains(T1.sqrt) && this.isEnded != 1) //check for plots
+                {
+                    this.Next();
+
+
+                    return N1.sqrtNode(this.currentchar, this.Factor());
+
+                }
 
                 return this.RaiseError();
 

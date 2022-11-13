@@ -16,16 +16,16 @@ namespace VinayWPF
         private string input;
         private int currentIndex = -1;
         private char[] WHITESPACE = { ' ', '\n', '\t', };
-        private string[] reservedWords = { "if", "while", "for", "foreach", "switch", "break", "continue", "else", "plot" };
+        private string[] reservedWords = { "if", "while", "for", "foreach", "switch", "break", "continue", "else", "plot","sqrt" };
         //private char[] specialCharaters = { '(', '@', ')', '-', '+','*','/','%','' };
-        private int equalityCheck = 0, plotCheck = 0, plotChecked = 0;
+        private int equalityCheck = 0, plotCheck = 0, plotChecked = 0, sqrtCheck=0;
         Tokens T1 = new Tokens();
         List<string> tokens = new List<string>();
         public string[] temp_string;
         bool isValidExp;
         public Lexer(string input)
         {
-            this.input = input;
+            this.input = input.Trim();
             plotCheck = 0;
             this.Next();
         }
@@ -171,8 +171,9 @@ namespace VinayWPF
 
                 */
 
+                //Checking if request came for sqaure root or not
+               
                 //Checking if request came for plot or not
-
                 else if (this.input.Contains("plot") && plotCheck == 0 && plotChecked == 0)
                 {
                     plotChecked = 1; // toexecute this if block only once
@@ -346,6 +347,28 @@ namespace VinayWPF
                     break;
                 }
                 */
+                else if (this.input.Contains("sqrt") && sqrtCheck == 0)
+                {
+                    sqrtCheck = 1;
+                    string sqrtString = "";
+                    sqrtString += this.CurrentChar();
+                    this.Next();
+                    int countLetters = 1;
+                    while (countLetters != 4)
+                    {
+                        countLetters += 1;
+                        sqrtString += this.CurrentChar();
+                        this.Next();
+                    }
+                    if (!sqrtString.Equals("sqrt") && (!this.CurrentChar().Equals('(') || !this.CurrentChar().Equals(' ')))
+                    {
+                        tokens.Clear();
+                        tokens.Add("Undefined Token:" + this.input);
+                        break;
+                    }
+                    tokens.Add(T1.sqrt.ToString());
+                }
+
                 else if ((Char.IsLetter(currentCharacter) || currentCharacter.Equals('_')) && plotCheck == 0)//check if variable exist or not 
                 {
                     string variableStr = this.CurrentChar().ToString();
@@ -376,6 +399,8 @@ namespace VinayWPF
                     tokens.Add(T1.variable + ":" + currentCharacter);
                     this.Next();
                 }
+                
+
 
                 else
                 {

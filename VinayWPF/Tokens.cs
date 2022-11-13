@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -30,6 +31,7 @@ namespace VinayWPF
         public string greaterThanOrEqual = ">=";
         public string plot = "plot";
         public string seperator = "##";
+        public string sqrt = "@";
     }
 
 }
