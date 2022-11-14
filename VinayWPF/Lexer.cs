@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OxyPlot;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 using System.Linq;
@@ -19,12 +20,14 @@ namespace VinayWPF
         private string[] reservedWords = { "if", "while", "for", "foreach", "switch", "break", "continue", "else", "plot" };
         //private char[] specialCharaters = { '(', '@', ')', '-', '+','*','/','%','' };
         private int equalityCheck = 0, plotCheck = 0, plotChecked = 0;
+        public static int plotTrue = 0; //to check if plot function runs
         Tokens T1 = new Tokens();
         List<string> tokens = new List<string>();
         public string[] temp_string;
         bool isValidExp;
         public Lexer(string input)
         {
+            Lexer.plotTrue = 0;
             this.input = input;
             plotCheck = 0;
             this.Next();
@@ -193,6 +196,7 @@ namespace VinayWPF
                         tokens.Add("Undefined Token:" + this.input);
                         break;
                     }
+                    Lexer.plotTrue += 1;
                     tokens.Add(T1.plot.ToString());
                 }
 

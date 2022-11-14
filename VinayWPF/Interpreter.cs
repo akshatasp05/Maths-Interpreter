@@ -17,8 +17,8 @@ namespace VinayWPF
         Stack<double> OperandsPlot = new Stack<double>(); //stack for number
         Stack<Char> OperationsPlot = new Stack<Char>();                                         // ack for operators
         List<double> div_num = new List<double>();
-        List<double> plotNumbersX = new List<double>();
-        List<double> plotNumbersY = new List<double>();
+       public static List<double> plotNumbersX = new List<double>();
+       public static List<double> plotNumbersY = new List<double>();
         List<double> plotNumbersOutput = new List<double>();
         List<double> parameters = new List<double>();
         List<string> variables = new List<string>();
@@ -354,12 +354,14 @@ namespace VinayWPF
             }
             if (expr.StartsWith("plot("))
             {
-                this.plotFunction = 1; //to differtiate betweem plot expression sybols and variables
+                Interpreter.plotNumbersX = new List<double>(); ;
+                Interpreter.plotNumbersY = new List<double>(); ;
+                this.plotFunction = 1; //to differentiate betweem plot expression symbols and variables
                 this.requestForPlot = 1; // to identify request came for plot 
                 expr = expr.Trim().Remove(0, 4);
                 temp_string = expr.Split("##");
                 expr = temp_string[0].Trim() + ')';
-                if (temp_string.Length == 5)
+                /*if (temp_string.Length == 5)
                 {
                     scale = Double.Parse(temp_string[4].Trim(')'));
                     stepCount = Double.Parse(temp_string[3].Trim());
@@ -396,6 +398,48 @@ namespace VinayWPF
                     lowerbound = 1;
                     upperbound = lowerbound + 10;
                 }
+                */
+                //Replace Code here
+                if (temp_string.Length == 5)
+                {
+                    scale = Double.Parse(temp_string[4].Trim(')').Trim('('));
+                    stepCount = Double.Parse(temp_string[3].Trim().Replace('~', '-').Trim('(').Trim(')'));
+                    upperbound = Double.Parse(temp_string[2].Trim().Replace('~', '-').Trim('(').Trim(')'));
+                    lowerbound = Double.Parse(temp_string[1].Trim().Replace('~', '-').Trim('(').Trim(')'));
+                }
+
+                else if (temp_string.Length == 4)
+                {
+                    scale = 0.5;
+                    stepCount = Double.Parse(temp_string[3].Trim(')'));
+                    upperbound = Double.Parse(temp_string[2].Trim().Replace('~', '-').Trim('(').Trim(')'));
+                    lowerbound = Double.Parse(temp_string[1].Trim().Replace('~', '-').Trim('(').Trim(')'));
+                }
+
+                else if (temp_string.Length == 3)
+                {
+                    scale = 0.5;
+                    stepCount = 1;
+                    upperbound = Double.Parse(temp_string[2].Trim().Replace('~', '-').Trim('(').Trim(')'));
+                    lowerbound = Double.Parse(temp_string[1].Trim().Replace('~', '-').Trim('(').Trim(')'));
+                }
+
+                else if(temp_string.Length == 2)
+                {
+                    scale = 0.5;
+                    stepCount = 1;
+                    lowerbound = Double.Parse(temp_string[1].Trim().Replace('~', '-').Trim('(').Trim(')'));
+                    upperbound = lowerbound + 10;
+                }
+
+                else
+                {
+                    scale = 0.5;
+                    stepCount = 1;
+                    lowerbound = 1;
+                    upperbound = lowerbound + 10;
+                }
+
                 //Operations.Push('$');
                 for (double j = lowerbound; j <= upperbound; j = j + stepCount)
                 {
@@ -404,13 +448,15 @@ namespace VinayWPF
                     output = plotInterpreter(expr);
 
                     //  Console.WriteLine(j);
-                    plotNumbersX.Add(j);
-                    plotNumbersY.Add(output);
+                   Interpreter.plotNumbersX.Add(j);
+                   Interpreter.plotNumbersY.Add(output);
                 }
-                foreach (double item in plotNumbersY)
+                /*foreach (double item in plotNumbersY)
                 {
                     Console.WriteLine(item);
-                }
+                }*/
+
+
                 return "1";
             }
 

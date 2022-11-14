@@ -192,6 +192,7 @@ namespace VinayWPF
            
         }
 
+        
         private void btn_evaluate(object sender, RoutedEventArgs e)
         {
 
@@ -221,6 +222,14 @@ namespace VinayWPF
                 VariableTable.AutoGenerateColumns = false;
                 VariableTable.ItemsSource = Variables;
                 //VariableTable.Style.;
+            }
+
+            int plotTrue = Lexer.plotTrue;
+
+            if (plotTrue == 1)
+            {
+                Form1 f1 = new Form1();
+                f1.Show();
             }
             //MyDictionary = Interpreter.variablesStored;
         }
