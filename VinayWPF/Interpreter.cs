@@ -228,6 +228,29 @@ namespace VinayWPF
                         return Operands.Pop();
                     case '$':
                         return Operands.Pop();
+                    case '@':
+                        long num = Convert.ToInt64(Operands.Pop());
+                        long start = 1, end = num / 2;
+                        long mid = 0, ans = 0, sqr = 0;
+                        while (start <= end)
+                        {
+                            mid = (start + end) / 2;
+                            sqr = mid * mid;
+                            if (sqr == num)
+                            {
+                                return mid;
+                            }
+                            else if (sqr <= num)
+                            {
+                                start = mid + 1;
+                                ans = mid;
+                            }
+                            else
+                            {
+                                end = mid - 1;
+                            }
+                        }
+                        return ans;
 
 
                 }
@@ -312,7 +335,7 @@ namespace VinayWPF
                 }
                 else if (Char.IsLetter(c) && this.plotFunction == 1)
                 {
-                    this.plotFunction = 0;
+                    //this.plotFunction = 0;
                     plotValues[c] = new List<double>();
                     Operands.Push(this.valueOfx);
                 }
@@ -352,7 +375,7 @@ namespace VinayWPF
                 return Interpreter.variablesStored[expr].ToString();
 
             }
-            if (expr.StartsWith("plot("))
+            if (expr.StartsWith("plot(") || expr.Contains("plot("))
             {
                 Interpreter.plotNumbersX = new List<double>(); ;
                 Interpreter.plotNumbersY = new List<double>(); ;
@@ -360,7 +383,16 @@ namespace VinayWPF
                 this.requestForPlot = 1; // to identify request came for plot 
                 expr = expr.Trim().Remove(0, 4);
                 temp_string = expr.Split("##");
-                expr = temp_string[0].Trim() + ')';
+                int freqOpen = temp_string[0].Where(x => (x == '(')).Count();
+                int freqClose = temp_string[0].Where(x => (x == ')')).Count();
+                if (freqOpen > freqClose)
+                {
+                    expr = temp_string[0].Trim() + ')';
+                }
+                else
+                {
+                    expr = temp_string[0].Trim();
+                }
                 /*if (temp_string.Length == 5)
                 {
                     scale = Double.Parse(temp_string[4].Trim(')'));

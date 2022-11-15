@@ -17,7 +17,7 @@ namespace VinayWPF
         private string input;
         private int currentIndex = -1;
         private char[] WHITESPACE = { ' ', '\n', '\t', };
-        private string[] reservedWords = { "if", "while", "for", "foreach", "switch", "break", "continue", "else", "plot" };
+        private string[] reservedWords = { "if", "while", "for", "foreach", "switch", "break", "continue", "else", "plot" ,"sqrt"};
         //private char[] specialCharaters = { '(', '@', ')', '-', '+','*','/','%','' };
         private int equalityCheck = 0, plotCheck = 0, plotChecked = 0;
         public static int plotTrue = 0; //to check if plot function runs
@@ -176,7 +176,7 @@ namespace VinayWPF
 
                 //Checking if request came for plot or not
 
-                else if (this.input.Contains("plot") && plotCheck == 0 && plotChecked == 0)
+                else if (this.input.StartsWith("plot(") && plotCheck == 0 && plotChecked == 0)
                 {
                     plotChecked = 1; // toexecute this if block only once
                     plotCheck = 1;
@@ -361,22 +361,39 @@ namespace VinayWPF
                         this.Next();
                         currentChar = this.CurrentChar();
                     }
-                    //this.currentIndex = this.currentIndex - 1;
-                    if (Interpreter.variablesStored.ContainsKey(variableStr))
+                    if (variableStr.Equals("sqrt"))
                     {
-                        tokens.Add(T1.variable + ":" + variableStr);
+                        if (this.CurrentChar().Equals('('))
+                        {
+                            //this.Next();
+                            tokens.Add(T1.sqrt.ToString());
+                        }
+                        else
+                        {
+                            tokens.Clear();
+                            tokens.Add("Undefined Token:" + this.input);
+                            break;
+                        }
                     }
                     else
                     {
-                        tokens.Clear();
-                        tokens.Add("Undefined Token:" + variableStr);
-                        break;
+                        //this.currentIndex = this.currentIndex - 1;
+                        if (Interpreter.variablesStored.ContainsKey(variableStr))
+                        {
+                            tokens.Add(T1.variable + ":" + variableStr);
+                        }
+                        else
+                        {
+                            tokens.Clear();
+                            tokens.Add("Undefined Token:" + variableStr);
+                            break;
+                        }
                     }
                 }
 
                 else if (Char.IsLetter(currentCharacter) && plotCheck == 1)
                 {
-                    plotCheck = 0;
+                    //plotCheck = 0;
                     tokens.Add(T1.variable + ":" + currentCharacter);
                     this.Next();
                 }

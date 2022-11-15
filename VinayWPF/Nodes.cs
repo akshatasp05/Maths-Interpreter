@@ -133,5 +133,13 @@ namespace VinayWPF
             //  return "("+"-" + this.Node1+")";
             return this.Node1 + "##" + this.Node2;
         }
+        public string sqrtNode(string Node1, string Node2)
+        {
+            this.Node1 = Node1;
+            this.Node2 = Node2;
+
+            //  return "("+"-" + this.Node1+")";
+            return '('+this.Node1 + this.Node2+')';
+        }
     }
 }

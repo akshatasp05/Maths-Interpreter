@@ -30,6 +30,7 @@ namespace VinayWPF
         public string greaterThanOrEqual = ">=";
         public string plot = "plot";
         public string seperator = "##";
+        public string sqrt = "@";
     }
 
 }

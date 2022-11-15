@@ -60,6 +60,7 @@ namespace VinayWPF
             if (Tree.Equals("Syntax Error"))
             {
                 //Console.WriteLine("Syntax Error");
+                Lexer.plotTrue = 0;
                 return "Syntax Error";
 
 
