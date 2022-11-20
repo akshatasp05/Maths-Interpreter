@@ -53,8 +53,9 @@ namespace VinayWPF
 
              }
 
-*/             //Console.WriteLine(string.Join(",", tokens));
-
+*/             //Console.WriteLine();
+           // return string.Join(",", tokens);
+            
             Parser p1 = new Parser(tokens);
             Tree = p1.Parse();
             if (Tree.Equals("Syntax Error"))
@@ -66,11 +67,14 @@ namespace VinayWPF
 
             }
             //Console.WriteLine(Tree);
-
-            ans = interpreter.interpret(Tree);
+           //return Tree;
+            
+           ans = interpreter.interpret(Tree);
             //Console.WriteLine(ans);
 
             return ans;
+            
+            
         }
     }
 

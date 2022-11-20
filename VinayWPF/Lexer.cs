@@ -17,9 +17,9 @@ namespace VinayWPF
         private string input;
         private int currentIndex = -1;
         private char[] WHITESPACE = { ' ', '\n', '\t', };
-        private string[] reservedWords = { "if", "while", "for", "foreach", "switch", "break", "continue", "else", "plot" ,"sqrt"};
+        private string[] reservedWords = { "if", "while", "for", "foreach", "switch", "break", "continue", "else", "plot" ,"sqrt","vecs"};
         //private char[] specialCharaters = { '(', '@', ')', '-', '+','*','/','%','' };
-        private int equalityCheck = 0, plotCheck = 0, plotChecked = 0;
+        private int equalityCheck = 0, plotCheck = 0, plotChecked = 0,vecCheked=0;
         public static int plotTrue = 0; //to check if plot function runs
         Tokens T1 = new Tokens();
         List<string> tokens = new List<string>();
@@ -285,6 +285,22 @@ namespace VinayWPF
                     this.tokens.Add(T1.seperator.ToString());
                     this.Next();
                 }
+                else if (this.CurrentChar().Equals(',') && vecCheked == 1)
+                {
+                    this.tokens.Add(T1.seperator.ToString());
+                    this.Next();
+                }
+                else if (this.CurrentChar().Equals('.') && vecCheked == 1)
+                {
+                    this.tokens.Add(T1.dot.ToString());
+                    this.Next();
+                }
+                else if (this.CurrentChar().Equals('&') && vecCheked == 1)
+                {
+                    this.tokens.Add(T1.cross.ToString());
+                    this.Next();
+                }
+
 
                 else if (WHITESPACE.Contains(currentCharacter))
                 {
@@ -367,6 +383,22 @@ namespace VinayWPF
                         {
                             //this.Next();
                             tokens.Add(T1.sqrt.ToString());
+                        }
+                        else
+                        {
+                            tokens.Clear();
+                            tokens.Add("Undefined Token:" + this.input);
+                            break;
+                        }
+                    }
+                    else if(variableStr.Equals("vec"))
+                    {
+                        if (this.CurrentChar().Equals('('))
+                        {
+                            //this.Next();
+                            this.vecCheked = 1;
+
+                            tokens.Add(T1.vector.ToString());
                         }
                         else
                         {

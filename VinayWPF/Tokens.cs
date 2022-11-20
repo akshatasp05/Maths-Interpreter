@@ -31,6 +31,9 @@ namespace VinayWPF
         public string plot = "plot";
         public string seperator = "##";
         public string sqrt = "@";
+        public string vector = "vec";
+        public string dot = ".";
+        public string cross = "&";
     }
 
 }

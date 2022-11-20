@@ -146,7 +146,7 @@ namespace VinayWPF
             else
             {
                 this.currentchar = this.CurrentValue();
-                while (this.isEnded != 1 && (this.currentchar.Equals(T1.plus) || this.currentchar.Equals(T1.subtract)))
+                while (this.isEnded != 1 && (this.currentchar.Equals(T1.plus) || this.currentchar.Equals(T1.subtract) || this.currentchar.Equals(T1.dot)) || this.currentchar.Equals(T1.cross))
                 {
 
                     if (this.currentchar.Equals(T1.plus))
@@ -158,6 +158,16 @@ namespace VinayWPF
                     {
                         this.Next();
                         res = N1.SubtractNode(res, this.Term());  // for example -  add node 2 - 3
+                    }
+                    else if ((this.currentchar.Equals(T1.dot)))
+                    {
+                        this.Next();
+                        res = N1.dotNode(res, this.Term());  // for example -  add node 2 - 3
+                    }
+                    else if ((this.currentchar.Equals(T1.cross)))
+                    {
+                        this.Next();
+                        res = N1.crossNode(res, this.Term());  // for example -  add node 2 - 3
                     }
 
 
@@ -279,6 +289,17 @@ namespace VinayWPF
                     return N1.plotNode(this.currentchar, this.Factor());
 
                 }
+                else if (this.currentchar.Contains(T1.vector) && this.isEnded != 1) //check for plots
+                {
+                    this.Next();
+
+                    if (!this.input[this.input.Count - 1].Equals(T1.rightParenthesis))
+                    {
+                        return this.RaiseError();
+                    }
+                    return N1.vecNode(this.currentchar, this.Factor());
+
+                }
                 else if (this.currentchar.Contains(T1.sqrt) && this.isEnded != 1) //check for plots
                 {
                     this.Next();
@@ -312,7 +333,7 @@ namespace VinayWPF
 | <term> / <factor>
 | <term>^<factor>
 |<factor>
-<factor> ::= <double> | <expr> | <variable name> | '(' <expr> ')' | plot<factor>
+<factor> ::= <double> | <expr> | <variable name> | '(' <expr> ')' | plot<factor> | vector<factor>
 <double> ::= <digit> | <double><digit>
 <digit> ::= 0|1|2|3|4|5|6|7|8|9 | | negative  numbers | float numbers 
 <variable name> ::= any variable name

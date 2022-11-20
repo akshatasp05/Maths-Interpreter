@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data;
 using System.Collections;
+using System.Windows.Media;
 
 namespace VinayWPF
 
@@ -22,14 +23,16 @@ namespace VinayWPF
         List<double> plotNumbersOutput = new List<double>();
         List<double> parameters = new List<double>();
         List<string> variables = new List<string>();
+        List<List<double>> vectors = new List<List<double>>();
+        List<List<double>> vectorsResult = new List<List<double>>();
         private Dictionary<Char, List<double>> plotValues = new Dictionary<Char, List<double>>();
         public static Dictionary<string, double> variablesStored = new Dictionary<string, double>();
         Tokens T1 = new Tokens();
         string[] temp_string;
-        int div_count = 1, plotFunction = 0, requestForPlot = 0;
-        string variable,updateVariable="";
+        int div_count = 1, plotFunction = 0, requestForPlot = 0,isVectorOperation=0,isDimensionSame=1;
+        string variable,updateVariable="",var="";
         double output, div_exp, temp_num1, upperbound, lowerbound, scale, stepCount, valueOfx;
-
+       // List<double> vecValues = new List<double>();
         public double Calculate(Stack<double> Operands, Stack<Char> Operations)
         {
             double num1, num2;
@@ -347,7 +350,7 @@ namespace VinayWPF
                 }
                 else if (c.Equals(')'))
                 {
-                    while (Operations.Peek() != '(')//check all the operators till '(' is reached
+                    while (Operations.Peek() != '(' && Operations.Count()!=0)//check all the operators till '(' is reached
                     {
                         output = Calculate(Operands, Operations);
                         Operands.Push(output);   //push result back to stack
@@ -554,15 +557,171 @@ namespace VinayWPF
                         }
                     }
                     i = i - 1;
-                    this.variables.Add(this.variable);
-                    if (!Interpreter.variablesStored.ContainsKey(this.variable))
+                    if (this.variable.Equals("vec"))
                     {
-                        //this.updateVariable = this.variable;
-                        Interpreter.variablesStored[this.variable] = 0;
+                        this.isVectorOperation = 1;
+                        List<double> vecValues = new List<double>();
+                        i = i + 1;
+                        while (expr[i] != ')')
+                        {
+
+
+                            char c1 = expr[i];
+
+                            if (c1.Equals('('))
+                            {
+                                i = i + 1;
+                                continue;
+                            }
+                            else if (c1.Equals('#'))
+                            {
+                                i = i + 1;
+                                if (c1.Equals('#'))
+                                {
+                                    continue;
+                                }
+                            }
+
+                            else if (c1.Equals('~'))
+                            {
+                                number = "-";
+                                if (expr.Length != i)
+                                {
+                                    i = i + 1;
+                                }
+                                if (Char.IsDigit(expr[i]))
+                                {
+                                    c1 = expr[i];
+                                    while (Char.IsDigit(c1) || c.Equals('.'))
+                                    {
+
+                                        number = number + c1;
+                                        i = i + 1;
+
+                                        if (i < expr.Length)
+                                        {
+                                            c1 = expr[i];
+
+                                        }
+                                        else
+                                        {
+                                            break;
+                                        }
+
+
+                                    }
+                                    if (expr[i].Equals(')'))
+                                    {
+                                        if (i < expr.Length)
+                                        {
+                                            vecValues.Add(double.Parse(number));
+                                            i = i + 1;
+                                            continue;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        i = i - 1;
+                                    }
+                                    vecValues.Add(double.Parse(number));
+                                }
+                                else
+                                {
+                                    return "Invalid Expression";
+                                }
+                            }
+
+                            else if (Char.IsDigit(c1))
+                            {
+
+                                number = "";
+                                //conditions for multiple digit numbers
+                                while (Char.IsDigit(c1) || c.Equals('.'))
+                                {
+
+                                    number = number + c1;
+                                    i = i + 1;
+
+                                    if (i < expr.Length)
+                                    {
+                                        c1 = expr[i];
+
+                                    }
+                                    else
+                                    {
+                                        break;
+                                    }
+
+
+                                }
+                                i = i - 1;
+                                vecValues.Add(double.Parse(number));
+                            }
+                            else if (Char.IsLetter(c1))
+                            {
+                                var = "";
+
+                                while (Char.IsLetterOrDigit(c1) || c1.Equals('_'))
+                                {
+                                    var = var + c1;
+                                    i = i + 1;
+                                    if (i < expr.Length)
+                                    {
+                                        c1 = expr[i];
+
+                                    }
+                                    else
+                                    {
+                                        break;
+                                    }
+                                }
+                                i = i - 1;
+                                vecValues.Add(Interpreter.variablesStored[var]);
+                            }
+                            else if (c1.Equals(')'))
+                            {
+                                // this.vectors.Add(vecValues);
+                                continue;
+                            }
+                            else
+                            {
+                                return "Invalid Expression";
+                            }
+                            i = i + 1;
+                        }
+                        this.vectors.Add(vecValues);
+                        //vecValues.Clear();
+                        while (expr[i] == ')')
+                        {
+                            if (i != expr.Length - 1)
+                            {
+                                i = i + 1;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                        if (expr[i] == ')')
+                        {
+                            i = i + 1;
+                            continue;
+                        }
+                        i = i - 1;
+
                     }
                     else
                     {
-                        Operands.Push(Interpreter.variablesStored[this.variable]);
+                        this.variables.Add(this.variable);
+                        if (!Interpreter.variablesStored.ContainsKey(this.variable))
+                        {
+                            //this.updateVariable = this.variable;
+                            Interpreter.variablesStored[this.variable] = 0;
+                        }
+                        else
+                        {
+                            Operands.Push(Interpreter.variablesStored[this.variable]);
+                        }
                     }
                 }
                 else if (Char.IsLetter(c) && plotFunction == 1)
@@ -577,7 +736,7 @@ namespace VinayWPF
                 {
                     Operations.Push(c);
                 }
-                else if (c.Equals(')'))
+                else if (c.Equals(')') && this.isVectorOperation == 0)
                 {   //Code for plot function
                     /*
                     if (requestForPlot == 1)
@@ -656,13 +815,22 @@ namespace VinayWPF
                     }//executing normal mathematical expression
                     else
                     {*/
-                    while (Operations.Peek() != '(')//check all the operators till '(' is reached
+                    if (Operations.Count != 0)
                     {
-                        output = Calculate(Operands, Operations);
-                        Operands.Push(output);   //push result back to stack
+                        while (Operations.Peek() != '(')//check all the operators till '(' is reached
+                        {
+                            output = Calculate(Operands, Operations);
+                            Operands.Push(output); //push result back to stack
+                            if(Operations.Count ==0)
+                            {
+                                break;
+                            }
+                        }
+                        if (Operations.Count != 0)
+                        {
+                            Operations.Pop();
+                        }
                     }
-                    Operations.Pop();
-
                 }
 
                 else
@@ -671,11 +839,184 @@ namespace VinayWPF
                 }
 
             }
-
-            while (Operations.Count() != 0)
+            if (this.isVectorOperation == 1)
             {
-                output = Calculate(Operands, Operations);
-                Operands.Push(output);   //push final result back to stack
+                string test = "";
+
+                /*foreach(List<double> vector in this.vectors)
+                {
+                    foreach(var value in vector)
+                        {
+                        test = test + value.ToString();
+                    }
+                }
+                */
+
+                int dimensionOfArray = this.vectors[0].Count;
+                foreach (List<double> vector in this.vectors)
+                {
+
+                    if (vector.Count != dimensionOfArray)
+                    {
+                        isDimensionSame = 0;
+                        break;
+                    }
+                }
+                if (isDimensionSame == 0)
+                {
+                    return "Dimension of Vectors is not same";
+                }
+                vectorsResult.Add(vectors[0]);
+                vectors.RemoveAt(0);
+                if (Operands.Count == 0)
+                {
+                    while (Operations.Count() != 0 && vectors.Count != 0)
+                    {
+                        char ch = Operations.Pop();
+                        if (ch == '(')
+                        {
+                            //Operations.Pop();
+                            continue;
+                        }
+                        if (ch.Equals('+'))
+                        {
+                            List<List<double>> tempvectorResults = new List<List<double>>(vectorsResult);
+                            // tempvectorResults = vectorsResult.Clone();
+                            //  var res = vectorsResult[0].Zip(vectors[0], (n, w) => new { reusltVec = n, vec = w });
+
+                            int vecElement = 0;
+                            /* foreach (var a in res)
+                             {
+                                 tempvectorResults[0][vecElement] = a.reusltVec + a.vec; //resultvec first vecotr vec//second veotr
+                                 vecElement++;
+                             }
+                            */
+                            int resCounter = 0, vecCounter = 0;
+                            if (vectors.Count == 0 || vectorsResult.Count == 0)
+
+                            {
+                                return "Invalid Expression";
+                            }
+                            while (resCounter < dimensionOfArray && vecCounter < dimensionOfArray)
+                            {
+                                vectorsResult[0][resCounter] = vectorsResult[0][resCounter] + vectors[0][vecCounter];
+                                resCounter++;
+                                vecCounter++;
+                            }
+                            vectors.RemoveAt(0);
+                            //vectorsResult = tempvectorResults;
+                        }
+                        else if (ch.Equals('-'))
+                        {
+                            List<List<double>> tempvectorResults = new List<List<double>>(vectorsResult);
+
+                            //var res = vectorsResult[0].Zip(vectors[0], (n, w) => new { reusltVec = n, vec = w });
+                            int vecElement = 0;
+                            int resCounter = 0, vecCounter = 0;
+                            if (vectors.Count == 0 || vectorsResult.Count == 0)
+
+                            {
+                                return "Invalid Expression";
+                            }
+                            while (resCounter < dimensionOfArray && vecCounter < dimensionOfArray)
+                            {
+                                vectorsResult[0][resCounter] = vectorsResult[0][resCounter] - vectors[0][vecCounter];
+                                resCounter++;
+                                vecCounter++;
+                            }
+                            vectors.RemoveAt(0);
+                            vectorsResult = tempvectorResults;
+                        }
+                        else if (ch.Equals('.'))
+                        {
+                            double sum1 = 0;
+                            int incCounter = 0;
+                            if (vectors.Count == 0 || vectorsResult.Count == 0)
+
+                            {
+                                return "Invalid Expression";
+                            }
+                            while (incCounter < dimensionOfArray)
+                            {
+                                sum1 = sum1 + vectorsResult[0][incCounter] * vectors[0][incCounter];
+                                incCounter++;
+                            }
+                            vectors.RemoveAt(0);
+                            if (vectors.Count == 0)
+                            {
+                                return sum1.ToString();
+                            }
+                            Operands.Push(sum1);
+                        }
+                        else if (ch.Equals('*'))
+                        {
+                            double sum1 = 0;
+                            int incCounter = 0;
+                            if (vectors.Count == 0 || vectorsResult.Count == 0)
+
+                            {
+                                return "Invalid Expression";
+                            }
+                            if (dimensionOfArray == 3)
+                            {
+                                double firstRow = vectorsResult[0][0];
+                                double secondRow = vectorsResult[0][1];
+                                double thirdRow = vectorsResult[0][2];
+                                vectorsResult[0][0] = secondRow * vectors[0][2] - thirdRow * vectors[0][1];
+                                vectorsResult[0][1] = thirdRow * vectors[0][0] - firstRow * vectors[0][2];
+                                vectorsResult[0][2] = firstRow * vectors[0][1] - secondRow * vectors[0][0];
+                            }
+                            else if (dimensionOfArray == 2)
+                            {
+                                vectorsResult[0][0] = vectorsResult[0][0] * vectors[0][1] - vectorsResult[0][0] * vectors[0][1];
+
+                            }
+                            vectors.RemoveAt(0);
+
+                        }
+
+
+                    }
+                    return string.Join(",", vectorsResult[0]);
+                }
+                /*
+                else
+                {
+                    while (Operations.Count() != 0 && vectors.Count != 0)
+                    {
+                        char ch = Operations.Pop();
+                        if (ch == '*')
+                        {
+                            //Operations.Pop();
+                            double num1 = 0;
+                            int incCounter = 0;
+                            if (Operands.Count() != 0)
+                            {
+                                num1 = Operands.Pop();
+                            }
+                            while (incCounter < dimensionOfArray)
+                            {
+                                vectorsResult[0][incCounter] = vectorsResult[0][incCounter] * num1;
+                                incCounter++;
+                            }
+                        }
+                        else
+                        {
+                            return "Invalid Expression";
+                        }
+                    }
+                    return string.Join(",", vectorsResult[0]);
+
+                }
+                */
+            }
+            else
+            {
+                while (Operations.Count() != 0)
+                {
+                    output = Calculate(Operands, Operations);
+                    Operands.Push(output);   //push final result back to stack
+                }
             }
             if (expr.Contains(T1.equality) || expr.Contains(T1.lessThan) || expr.Contains(T1.lessThanOrEqual) || expr.Contains(T1.greaterThan) || expr.Contains(T1.greaterThanOrEqual))
             {

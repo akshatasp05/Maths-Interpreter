@@ -125,6 +125,30 @@ namespace VinayWPF
             //  return "("+"-" + this.Node1+")";
             return this.Node1 + this.Node2;
         }
+        public string vecNode(string Node1, string Node2)
+        {
+            this.Node1 = Node1;
+            this.Node2 = Node2;
+
+            //  return "("+"-" + this.Node1+")";
+            return this.Node1 +"(" +this.Node2 +")";
+        }
+        public string dotNode(string Node1, string Node2)
+        {
+            this.Node1 = Node1;
+            this.Node2 = Node2;
+
+            //  return "("+"-" + this.Node1+")";
+            return this.Node1 + "." + this.Node2 ;
+        }
+        public string crossNode(string Node1, string Node2)
+        {
+            this.Node1 = Node1;
+            this.Node2 = Node2;
+
+            //  return "("+"-" + this.Node1+")";
+            return this.Node1 + "&" + this.Node2;
+        }
         public string seperatorNode(string Node1, string Node2)
         {
             this.Node1 = Node1;
