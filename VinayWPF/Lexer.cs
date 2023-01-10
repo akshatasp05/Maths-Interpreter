@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OxyPlot;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 using System.Linq;
@@ -16,16 +17,18 @@ namespace VinayWPF
         private string input;
         private int currentIndex = -1;
         private char[] WHITESPACE = { ' ', '\n', '\t', };
-        private string[] reservedWords = { "if", "while", "for", "foreach", "switch", "break", "continue", "else", "plot","sqrt" };
+        private string[] reservedWords = { "if", "while", "for", "foreach", "switch", "break", "continue", "else", "plot" ,"sqrt","vecs","bisec","diff"};
         //private char[] specialCharaters = { '(', '@', ')', '-', '+','*','/','%','' };
-        private int equalityCheck = 0, plotCheck = 0, plotChecked = 0, sqrtCheck=0;
+        private int equalityCheck = 0, plotCheck = 0, plotChecked = 0,vecCheked=0,bisecChecked=0, diffChecked=0, rootChecked=0;
+        public static int plotTrue = 0; //to check if plot function runs
         Tokens T1 = new Tokens();
         List<string> tokens = new List<string>();
         public string[] temp_string;
         bool isValidExp;
         public Lexer(string input)
         {
-            this.input = input.Trim();
+            Lexer.plotTrue = 0;
+            this.input = input;
             plotCheck = 0;
             this.Next();
         }
@@ -171,10 +174,9 @@ namespace VinayWPF
 
                 */
 
-                //Checking if request came for sqaure root or not
-               
                 //Checking if request came for plot or not
-                else if (this.input.Contains("plot") && plotCheck == 0 && plotChecked == 0)
+
+                else if (this.input.StartsWith("plot(") && plotCheck == 0 && plotChecked == 0)
                 {
                     plotChecked = 1; // toexecute this if block only once
                     plotCheck = 1;
@@ -194,7 +196,83 @@ namespace VinayWPF
                         tokens.Add("Undefined Token:" + this.input);
                         break;
                     }
+                    Lexer.plotTrue += 1;
                     tokens.Add(T1.plot.ToString());
+                }
+                //checking for differentiation
+
+                else if (this.input.StartsWith("diff(") && diffChecked == 0 )
+                {
+                   
+                    string varPlotString = "";
+                    varPlotString += this.CurrentChar();
+                    this.Next();
+                    int countLetters = 1;
+                    while (countLetters != 4)
+                    {
+                        countLetters += 1;
+                        varPlotString += this.CurrentChar();
+                        this.Next();
+                    }
+                    if (!varPlotString.Equals("diff") && (!this.CurrentChar().Equals('(') || !this.CurrentChar().Equals(' ')))
+                    {
+                        tokens.Clear();
+                        tokens.Add("Undefined Token:" + this.input);
+                        break;
+                    }
+                    diffChecked = 1;
+                    tokens.Add(T1.diff.ToString());
+                }
+                //checking for newtonRaphson Method
+                else if (this.input.StartsWith("root(") && rootChecked == 0)
+                {
+
+                    string varPlotString = "";
+                    varPlotString += this.CurrentChar();
+                    this.Next();
+                    int countLetters = 1;
+                    while (countLetters != 4)
+                    {
+                        countLetters += 1;
+                        varPlotString += this.CurrentChar();
+                        this.Next();
+                    }
+                    if (!varPlotString.Equals("root") && (!this.CurrentChar().Equals('(') || !this.CurrentChar().Equals(' ')))
+                    {
+                        tokens.Clear();
+                        tokens.Add("Undefined Token:" + this.input);
+                        break;
+                    }
+                    rootChecked = 1;
+                    tokens.Add(T1.root.ToString());
+                }
+
+                ///checking if request came for bisection or not
+                else if (this.input.StartsWith("bisec(") && bisecChecked == 0 )
+                {
+                  // toexecute this if block only once
+                   
+                  
+                    plotCheck = 1;
+                    string varPlotString = "";
+                    varPlotString += this.CurrentChar();
+                    this.Next();
+                    int countLetters = 1;
+                    while (countLetters != 5)
+                    {
+                        countLetters += 1;
+                        varPlotString += this.CurrentChar();
+                        this.Next();
+                    }
+                    if (!varPlotString.Equals("bisec") && (!this.CurrentChar().Equals('(') || !this.CurrentChar().Equals(' ')))
+                    {
+                        tokens.Clear();
+                        tokens.Add("Undefined Token:" + this.input);
+                        break;
+                    }
+                    bisecChecked = 1;
+                 
+                    tokens.Add(T1.bisec.ToString());
                 }
 
                 else if (currentCharacter.Equals('<'))
@@ -282,6 +360,22 @@ namespace VinayWPF
                     this.tokens.Add(T1.seperator.ToString());
                     this.Next();
                 }
+                else if (this.CurrentChar().Equals(',') && (vecCheked == 1 || bisecChecked==1 || rootChecked==1))
+                {
+                    this.tokens.Add(T1.seperator.ToString());
+                    this.Next();
+                }
+                else if (this.CurrentChar().Equals('.') && vecCheked == 1)
+                {
+                    this.tokens.Add(T1.dot.ToString());
+                    this.Next();
+                }
+                else if (this.CurrentChar().Equals('&') && vecCheked == 1)
+                {
+                    this.tokens.Add(T1.cross.ToString());
+                    this.Next();
+                }
+
 
                 else if (WHITESPACE.Contains(currentCharacter))
                 {
@@ -347,29 +441,7 @@ namespace VinayWPF
                     break;
                 }
                 */
-                else if (this.input.Contains("sqrt") && sqrtCheck == 0)
-                {
-                    sqrtCheck = 1;
-                    string sqrtString = "";
-                    sqrtString += this.CurrentChar();
-                    this.Next();
-                    int countLetters = 1;
-                    while (countLetters != 4)
-                    {
-                        countLetters += 1;
-                        sqrtString += this.CurrentChar();
-                        this.Next();
-                    }
-                    if (!sqrtString.Equals("sqrt") && (!this.CurrentChar().Equals('(') || !this.CurrentChar().Equals(' ')))
-                    {
-                        tokens.Clear();
-                        tokens.Add("Undefined Token:" + this.input);
-                        break;
-                    }
-                    tokens.Add(T1.sqrt.ToString());
-                }
-
-                else if ((Char.IsLetter(currentCharacter) || currentCharacter.Equals('_')) && plotCheck == 0)//check if variable exist or not 
+                else if ((Char.IsLetter(currentCharacter) || currentCharacter.Equals('_')) && plotCheck == 0 && bisecChecked==0 && diffChecked ==0 && rootChecked==0)//check if variable exist or not 
                 {
                     string variableStr = this.CurrentChar().ToString();
                     this.Next();
@@ -380,27 +452,67 @@ namespace VinayWPF
                         this.Next();
                         currentChar = this.CurrentChar();
                     }
-                    //this.currentIndex = this.currentIndex - 1;
-                    if (Interpreter.variablesStored.ContainsKey(variableStr))
+                    if (variableStr.Equals("sqrt"))
                     {
-                        tokens.Add(T1.variable + ":" + variableStr);
+                        if (this.CurrentChar().Equals('('))
+                        {
+                            //this.Next();
+                            tokens.Add(T1.sqrt.ToString());
+                        }
+                        else
+                        {
+                            tokens.Clear();
+                            tokens.Add("Undefined Token:" + this.input);
+                            break;
+                        }
+                    }
+                    //for vector identification
+                    else if(variableStr.Equals("vec"))
+                    {
+                        if (this.CurrentChar().Equals('('))
+                        {
+                            //this.Next();
+                            this.vecCheked = 1;
+
+                            tokens.Add(T1.vector.ToString());
+                        }
+                        else
+                        {
+                            tokens.Clear();
+                            tokens.Add("Undefined Token:" + this.input);
+                            break;
+                        }
                     }
                     else
                     {
-                        tokens.Clear();
-                        tokens.Add("Undefined Token:" + variableStr);
-                        break;
+                        //this.currentIndex = this.currentIndex - 1;
+                        if (Interpreter.variablesStored.ContainsKey(variableStr))
+                        {
+                            tokens.Add(T1.variable + ":" + variableStr);
+                        }
+                        else
+                        {
+                            tokens.Clear();
+                            tokens.Add("Undefined Token:" + variableStr);
+                            break;
+                        }
                     }
                 }
 
-                else if (Char.IsLetter(currentCharacter) && plotCheck == 1)
+                else if (Char.IsLetter(currentCharacter) && (plotCheck == 1 ||bisecChecked==1 || diffChecked ==1 || rootChecked==1))
                 {
-                    plotCheck = 0;
+                    //plotCheck = 0;
+                    
+                    if (!currentCharacter.Equals('x'))
+                    {
+                        Lexer.plotTrue = 0;
+                        tokens.Clear();
+                        tokens.Add("Undefined Token:" + currentCharacter);
+                        break;
+                    }
                     tokens.Add(T1.variable + ":" + currentCharacter);
                     this.Next();
                 }
-                
-
 
                 else
                 {

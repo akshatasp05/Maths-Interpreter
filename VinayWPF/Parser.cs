@@ -146,7 +146,7 @@ namespace VinayWPF
             else
             {
                 this.currentchar = this.CurrentValue();
-                while (this.isEnded != 1 && (this.currentchar.Equals(T1.plus) || this.currentchar.Equals(T1.subtract)))
+                while (this.isEnded != 1 && (this.currentchar.Equals(T1.plus) || this.currentchar.Equals(T1.subtract) || this.currentchar.Equals(T1.dot)) || this.currentchar.Equals(T1.cross))
                 {
 
                     if (this.currentchar.Equals(T1.plus))
@@ -158,6 +158,16 @@ namespace VinayWPF
                     {
                         this.Next();
                         res = N1.SubtractNode(res, this.Term());  // for example -  add node 2 - 3
+                    }
+                    else if ((this.currentchar.Equals(T1.dot)))
+                    {
+                        this.Next();
+                        res = N1.dotNode(res, this.Term());  // for example -  add node 2 - 3
+                    }
+                    else if ((this.currentchar.Equals(T1.cross)))
+                    {
+                        this.Next();
+                        res = N1.crossNode(res, this.Term());  // for example -  add node 2 - 3
                     }
 
 
@@ -247,7 +257,7 @@ namespace VinayWPF
                     return N1.NumberNode(this.currentchar.Split(":")[1].Trim());
 
                 }
-
+                /*
                 else if (this.currentchar.Equals(T1.plus) && (this.isEnded != 1))
                 {
                     this.Next();
@@ -256,6 +266,8 @@ namespace VinayWPF
                     return N1.AdditionNode(this.Factor()); ////to add node +2
 
                 }
+                */
+                //checking for negation
                 else if (this.currentchar.Equals(T1.subtract) && (this.isEnded != 1))
                 {
                     this.Next();
@@ -267,15 +279,67 @@ namespace VinayWPF
                     this.Next();
                     return N1.VariableNode(this.currentchar.Split(":")[1].Trim());
                 }
-
+                //checking for plot function
                 else if (this.currentchar.Contains(T1.plot) && this.isEnded != 1) //check for plots
                 {
                     this.Next();
 
-
+                    if (!this.input[this.input.Count-1].Equals(T1.rightParenthesis))
+                    {
+                        return this.RaiseError();
+                    }
                     return N1.plotNode(this.currentchar, this.Factor());
 
                 }
+                //checking for bisection
+                else if (this.currentchar.Contains(T1.bisec) && this.isEnded != 1) //check for plots
+                {
+                    this.Next();
+
+                    if (!this.input[this.input.Count - 1].Equals(T1.rightParenthesis))
+                    {
+                        return this.RaiseError();
+                    }
+                    return N1.bisecNode(this.currentchar, this.Factor());
+
+                }
+                //check for differentiation
+                else if (this.currentchar.Contains(T1.diff) && this.isEnded != 1) //check for plots
+                {
+                    this.Next();
+
+                    if (!this.input[this.input.Count - 1].Equals(T1.rightParenthesis))
+                    {
+                        return this.RaiseError();
+                    }
+                    return N1.diffNode(this.currentchar, this.Factor());
+
+                }
+                //check for newton ramphson method
+                else if (this.currentchar.Contains(T1.root) && this.isEnded != 1)
+                {
+                    this.Next();
+
+                    if (!this.input[this.input.Count - 1].Equals(T1.rightParenthesis))
+                    {
+                        return this.RaiseError();
+                    }
+                    return N1.rootNode(this.currentchar, this.Factor());
+
+                }
+                //checking for vector
+                else if (this.currentchar.Contains(T1.vector) && this.isEnded != 1) //check for plots
+                {
+                    this.Next();
+
+                    if (!this.input[this.input.Count - 1].Equals(T1.rightParenthesis))
+                    {
+                        return this.RaiseError();
+                    }
+                    return N1.vecNode(this.currentchar, this.Factor());
+
+                }
+                //checking for sqrt function
                 else if (this.currentchar.Contains(T1.sqrt) && this.isEnded != 1) //check for plots
                 {
                     this.Next();
@@ -284,6 +348,7 @@ namespace VinayWPF
                     return N1.sqrtNode(this.currentchar, this.Factor());
 
                 }
+
 
                 return this.RaiseError();
 
@@ -308,7 +373,7 @@ namespace VinayWPF
 | <term> / <factor>
 | <term>^<factor>
 |<factor>
-<factor> ::= <double> | <expr> | <variable name> | '(' <expr> ')' | plot<factor>
+<factor> ::= <double> | <expr> | <variable name> | '(' <expr> ')' | plot<factor> | vector<factor>
 <double> ::= <digit> | <double><digit>
 <digit> ::= 0|1|2|3|4|5|6|7|8|9 | | negative  numbers | float numbers 
 <variable name> ::= any variable name

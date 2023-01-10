@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -32,6 +31,12 @@ namespace VinayWPF
         public string plot = "plot";
         public string seperator = "##";
         public string sqrt = "@";
+        public string vector = "vec";
+        public string dot = ".";
+        public string cross = "&";
+        public string bisec = "bisec";
+        public string diff = "diff";
+        public string root = "root";
     }
 
 }
